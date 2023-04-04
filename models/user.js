@@ -1,5 +1,9 @@
 /** User class for message.ly */
-
+const db = require('../db');
+const jwt = require('jsonwebtoken');
+const {BCRYPT_WORK_FACTOR} = require('../config');
+const bcrypt = require('bcrypt');
+const ExpressError = require('../expressError');
 
 
 /** User of the site. */
