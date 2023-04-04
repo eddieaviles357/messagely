@@ -119,7 +119,7 @@ class User {
     WHERE to_username = $1
     `,
     [ username ]);
-    console.log(results.rows)
+    
     return results.rows.map(r => ({
       id: r.id,
       body: r.body,
