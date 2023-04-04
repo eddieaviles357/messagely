@@ -14,7 +14,17 @@ class User {
    *    {username, password, first_name, last_name, phone}
    */
 
-  static async register({username, password, first_name, last_name, phone}) { }
+  static async register({username, password, first_name, last_name, phone}) { 
+    const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
+
+    const userResult = await db.query(`
+      INSERT INTO users (username, password, first_name, last_name, phone, join_at, last_login_at)
+        VALUES ($1, $2, $3, $4, $5,NOW()::timestamp, NOW())
+        RETURNING username, password, first_name, last_name, phone`,
+      [ username, hashedPassword, first_name, last_name, phone ] );
+
+    return userResult.rows[0];
+  }
 
   /** Authenticate: is this username/password valid? Returns boolean. */
 
