@@ -37,7 +37,10 @@ class User {
 
   /** Update last_login_at for user */
 
-  static async updateLoginTimestamp(username) { }
+  static async updateLoginTimestamp(username) {
+    const result = await db.query( `UPDATE users SET last_login_at = NOW() WHERE username = $1`, [ username ] );
+    return result.rowCount;
+   }
 
   /** All: basic info on all users:
    * [{username, first_name, last_name, phone}, ...] */
