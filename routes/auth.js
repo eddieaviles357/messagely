@@ -14,9 +14,10 @@ const {SECRET_KEY} = require('../config');
 router.post('/login', async (req, res, next) => {
     try {
         const {username, password} = req.body;
+        console.log(req.user)
         if (await User.authenticate(username, password)) { 
             await User.updateLoginTimestamp(username);
-            const token = jwt.sign({username}, JWT_SECRET);
+            const token = jwt.sign({username}, SECRET_KEY);
             return res.status(200).json({token});
         } else {
             throw new ExpressError('Invalid username or password', 401);
@@ -37,18 +38,16 @@ router.post('/register', async (req, res, next) => {
     try {
         const user = await User.register(req.body);
         // update last login timestamp
-        await User.updateLoginTimestamp(user.username);
-
-        return res.status(200).json({
-            username: user.username,
-            password: user.password,
-            first_name: user.first_name,
-            last_name: user.last_name,
-            phone: user.phone,
-            token: jwt.sign({username: user.username}, JWT_SECRET)
-        });
+        if(user) {
+            await User.updateLoginTimestamp(user.username);
+            return res.status(200).json({
+                token: jwt.sign({username: user.username}, SECRET_KEY)
+            });
+        };
+        return res.status(400).json({error: 'OhOh, something went wrong'});
     } catch (err) {
-        next(err);        
+        if(err.code === '23505') next(new ExpressError('Username already taken', 400));
+        next(err)
     }
 })
 module.exports = router;
