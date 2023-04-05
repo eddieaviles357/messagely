@@ -40,9 +40,12 @@ router.get('/:id', ensureLoggedIn, async (req, res, next) => {
  **/
 router.post('/', ensureLoggedIn, async (req, res, next) => {
     try {
-        const {username} = req.user;
-        const {to_username, body} = req.body;
-        const result = await Message.create( {from_username: username, to_username, body} );
+        const msg = {
+            from_username: req.user.username,
+            to_username: req.body.to_username,
+            body: req.body.body
+        }
+        const result = await Message.create( msg );
 
         return res.status(201).json( {message: result} );
     } catch (err) {
