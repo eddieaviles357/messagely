@@ -14,13 +14,12 @@ const {SECRET_KEY} = require('../config');
 router.post('/login', async (req, res, next) => {
     try {
         const {username, password} = req.body;
-        console.log(req.user)
         if (await User.authenticate(username, password)) { 
             await User.updateLoginTimestamp(username);
             const token = jwt.sign({username}, SECRET_KEY);
             return res.status(200).json({token});
         } else {
-            throw new ExpressError('Invalid username or password', 401);
+            throw new ExpressError('Invalid username or password', 400);
         }
     } catch (err) {
         return next(err);
