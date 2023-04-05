@@ -2,6 +2,7 @@ const router = require('express').Router();
 const User = require('../models/user');
 const Message = require('../models/message');
 const ExpressError = require('../expressError');
+const {ensureLoggedIn} = require('../middleware/auth');
 
 /** GET / - get list of users.
  *
@@ -9,10 +10,9 @@ const ExpressError = require('../expressError');
  *
  **/
 
-router.get('/', async (req, res, next) => {
+router.get('/', ensureLoggedIn, async (req, res, next) => {
     try {
-        const users = await User.getAll();
-        console.log(users)
+        const users = await User.all();
         return res.json({users})
     } catch (err) {
         return next(err)
