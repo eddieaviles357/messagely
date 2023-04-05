@@ -2,6 +2,7 @@ const router = require('express').Router();
 const User = require('../models/user');
 const Message = require('../models/message');
 const ExpressError = require('../expressError');
+const {ensureLoggedIn, ensureCorrectUser} = require('../middleware/auth');
 
 /** GET /:id - get detail of message.
  *
@@ -15,7 +16,21 @@ const ExpressError = require('../expressError');
  * Make sure that the currently-logged-in users is either the to or from user.
  *
  **/
+router.get('/:id', ensureLoggedIn, async (req, res, next) => {
+    try {
+        const message = await Message.get(req.params.id);
+        const {from_user: {username: from_u}, to_user: {username: to_u}} = message;
 
+        // Make sure that the currently-logged-in users is either the to or from user.
+        if (from_u!== req.user.username && to_u!== req.user.username) {
+            throw new ExpressError('You are not allowed to read this message.', 403);
+        }
+
+        return res.status(200).json({message});
+    } catch (err) {
+        return next(err);
+    }
+})
 
 /** POST / - post message.
  *
