@@ -25,7 +25,7 @@ VALUES
 ('eddie123', '$2b$12$DxGUSeUO8T71X4waAGJvRODEXhqmXQmfk2wYAAdJeaSqTMZoizbYO', 'eddie', 'aviles', '9494444444',  NOW()::timestamp, NOW()),
 ('nancy123','$2b$12$A89.yxoTFm/.iA3P9lJB1.wT1ejtzfihguyphNqIdSzpBzURq.z8O', 'nancy', 'aviles', '9494444444',  NOW()::timestamp, NOW()),
 ('eric123','$2b$12$HenQaqTWBtrO0bI7mffCU.ZyIrjVtBc8hY8nr5.mfVen80FtqzGK.', 'eric', 'aviles', '9494444444',  NOW()::timestamp, NOW());
-
+-- eddieaviles123 is first password
 INSERT INTO messages (from_username, to_username, body, sent_at, read_at)
 VALUES
 ('eddie123', 'nancy123', 'hello nancy', NOW(), NOW()),
