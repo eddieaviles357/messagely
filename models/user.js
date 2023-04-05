@@ -30,8 +30,8 @@ class User {
 
   static async authenticate(username, password) { 
     const result = await db.query(`SELECT username, password FROM users WHERE username = $1`,[ username ]);
+    if(result.rows.length === 0) throw new ExpressError('Invalid username or password', 400);
     const hashedPassword = result.rows[0].password;
-
     return bcrypt.compare( password, hashedPassword );
   }
 
@@ -119,7 +119,7 @@ class User {
     WHERE to_username = $1
     `,
     [ username ]);
-    
+
     return results.rows.map(r => ({
       id: r.id,
       body: r.body,
